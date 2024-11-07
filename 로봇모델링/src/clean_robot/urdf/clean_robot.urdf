@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<robot name="clean_robot">
+  <link name="world"/>
+  
+  <joint name="fixed" type="fixed">
+    <parent link="world"/>
+    <child link="base_link"/>
+  </joint>
+  
+  <link name="base_link">
+    <visual>
+      <origin xyz="0 0 0.1" rpy="3.14159 0 0"/>
+      <geometry>
+        <mesh filename="file:/home/edurobot/prac_ws/src/clean_robot/urdf/meshes/assembly.stl" scale="1 1 1"/>
+      </geometry>
+      <material name="white">
+        <color rgba="1.0 1.0 1.0 1.0"/>
+      </material>
+    </visual>
+  </link>
+</robot>

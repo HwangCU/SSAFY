@@ -1,0 +1,35 @@
+<robot name="1DOF_ROBOT">
+    <link name="base_link">
+        <visual>
+            <origin xyz="0 0 0"/>
+            <geometry>
+                <cylinder radius="1" length="0.2"/> <!-- 원통 크기 설정 -->
+            </geometry>
+            <material name="white">
+                <color rgba="1.0 1.0 1.0 1.0"/> <!-- 흰색 설정 -->
+            </material>
+        </visual>
+    </link>
+
+    <!-- 조인트 1 정의 -->
+    <joint name="joint1" type="revolute"> <!-- 회전 조인트 설정 -->
+        <origin xyz="0 0 0.1" rpy="0 0 0" />
+        <parent link="base_link"/>
+        <child link="link1"/>
+        <axis xyz="1 0 0" /> <!-- Z축을 중심으로 회전 -->
+        <limit lower="-1.57" upper="1.57" effort="1000" velocity="1.0" /><!-- 회전 각도 제한 -->
+    </joint>
+
+    <!-- 링크 1 정의 -->
+    <link name="link1">
+        <visual>
+            <origin xyz="0 0 0.2" rpy="0 0 0" />
+            <geometry>
+                <box size="0.1 0.1 0.5"/> <!-- 정육면체 크기 설정 -->
+            </geometry>
+            <material name="orange">
+                <color rgba="1.0 0.5 0.0 1.0"/> <!-- 주황색 설정 -->
+            </material>
+        </visual>
+    </link>
+</robot>

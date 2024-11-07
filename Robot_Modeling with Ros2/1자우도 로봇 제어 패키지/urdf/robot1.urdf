@@ -1,0 +1,14 @@
+<robot name = "simple robot">
+    <link name = "base_link">
+        <visual>
+            <origin xyz = "0 0 0"/>
+            <geometry>
+                <box size = "1 1 1"/>
+            </geometry>
+             <material name="grey">
+                <color rgba="0.5 0.5 0.5 1.0"/> <!-- RGB 값으로 회색을 설정 -->
+            </material>
+        </visual>
+
+    </link>
+</robot>

@@ -1,0 +1,13 @@
+<robot name="simple_robot">
+    <link name="sphere_link">
+        <visual>
+            <origin xyz="0 0 0"/>
+            <geometry>
+                <sphere radius="0.5"/> <!-- 반지름이 0.5인 구 -->
+            </geometry>
+            <material name="blue">
+                <color rgba="0.0 0.0 1.0 1.0"/> <!-- RGB 값으로 파란색 설정 -->
+            </material>
+        </visual>
+    </link>
+</robot>

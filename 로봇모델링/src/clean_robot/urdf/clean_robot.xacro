@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="clean_robot">
+
+  <!-- 매크로 정의 -->
+  <xacro:macro name="base_link_macro" params="link_name stl_file">
+    <link name="${link_name}">
+      <visual>
+        <geometry>
+          <mesh filename="${stl_file}" scale="1 1 1"/>
+        </geometry>
+        <material name="white">
+          <color rgba="1.0 1.0 1.0 1.0"/>
+        </material>
+      </visual>
+      <collision>
+        <geometry>
+          <mesh filename="${stl_file}" scale="1 1 1"/>
+        </geometry>
+      </collision>
+    </link>
+  </xacro:macro>
+
+  <!-- 변수를 정의 -->
+  <xacro:property name="stl_path" value="package://clean_robot/urdf/meshes/assembly.stl"/>
+
+  <!-- 기본 조인트 -->
+  <joint name="fixed" type="fixed">
+    <parent link="world"/>
+    <child link="base_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <!-- 기본 링크 (매크로 호출 시 ${} 없이 사용) -->
+  <xacro:base_link_macro link_name="base_link" stl_file="stl_path"/>
+
+</robot>

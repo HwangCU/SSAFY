@@ -1,0 +1,39 @@
+<robot name="1DOF_ROBOT">
+  <link name="world"/>
+  <joint name="fixed" type="fixed">
+    <parent link="world"/>
+    <child link="base_link"/>
+  </joint>
+    
+  <link name="base_link">
+    <visual>
+      <origin xyz="0 0 0.1" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="1.0" length="0.2"/>
+      </geometry>
+      <material name="white">
+        <color rgba="1.0 1.0 1.0 1.0"/>
+      </material>
+    </visual>
+  </link>
+
+  <joint name="joint1" type="revolute">
+    <parent link="base_link"/>
+    <child link="link2"/>
+    <origin xyz="0 0 0.2" rpy="0 0 0"/>
+    <axis xyz="1 0 0"/>
+    <limit effort="100" velocity="1.0" lower="-1.57" upper="1.57"/>
+  </joint>
+
+  <link name="link2">
+    <visual>
+    <origin xyz="0 0 0.5" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.1 0.1 1.0"/>
+      </geometry>
+      <material name="orange">
+        <color rgba="1.0 0.5 0.0 1.0"/>
+      </material>
+    </visual>
+  </link>
+</robot>

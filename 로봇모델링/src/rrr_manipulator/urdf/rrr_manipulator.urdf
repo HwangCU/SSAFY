@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+<robot name="rrr_manipulator">
+  <!-- 첫 번째 링크 -->
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <cylinder radius="1" length="0.2"/>
+      </geometry>
+      <material name="white">
+        <color rgba="1.0 1.0 1.0 1.0"/>
+      </material>
+    </visual>
+  </link>
+
+  <!-- 첫 번째 조인트 -->
+  <joint name="joint1" type="revolute">
+    <parent link="base_link"/>
+    <child link="link1"/>
+    <origin xyz="0 0 0.1" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-3.14" upper="3.14" effort="10" velocity="1.0"/>
+  </joint>
+
+  <!-- 두 번째 링크 -->
+  <link name="link1">
+    <visual>
+      <origin xyz="0 0 0.4" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.1 0.1 0.8"/>
+      </geometry>
+      <material name="orange">
+        <color rgba="1.0 0.5 0.0 1.0"/>
+      </material>
+    </visual>
+  </link>
+
+  <!-- 두 번째 조인트 -->
+  <joint name="joint2" type="revolute">
+    <parent link="link1"/>
+    <child link="link2"/>
+    <origin xyz="0 0 0.8" rpy="0 0 0"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="-3.14" upper="3.14" effort="10" velocity="1.0"/>
+  </joint>
+
+  <!-- 세 번째 링크 -->
+  <link name="link2">
+    <visual>
+      <origin xyz="0 0 0.2" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.1 0.1 0.4"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0.0 0.0 0.0 1.0"/>
+      </material>
+    </visual>
+  </link>
+
+  <!-- 세 번째 조인트 -->
+  <joint name="joint3" type="revolute">
+    <parent link="link2"/>
+    <child link="link3"/>
+    <origin xyz="0 0 0.4" rpy="0 0 0"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="-3.14" upper="3.14" effort="10" velocity="1.0"/>
+  </joint>
+
+  <!-- 네 번째 링크 -->
+  <link name="link3">
+    <visual>
+      <origin xyz="0 0 0.3" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.1 0.1 0.6"/>
+      </geometry>
+      <material name="orange">
+        <color rgba="1.0 0.5 0.0 1.0"/>
+      </material>
+    </visual>
+  </link>
+
+</robot>

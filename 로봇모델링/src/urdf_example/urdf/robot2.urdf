@@ -1,0 +1,12 @@
+<robot name="simple_robot">
+  <link name="sphere_link">
+    <visual>
+      <geometry>
+        <sphere radius="0.5"/>
+      </geometry>
+      <material name="blue">
+        <color rgba="0.0 0.0 1.0 1.0"/>
+      </material>
+    </visual>
+  </link>
+</robot>
