@@ -1,0 +1,43 @@
+[SaveInfo]
+Version=V3.90
+Copyright=(Release : R190522)
+[선택페이지.PGX]
+x=0
+y=0
+cx=1324
+cy=706
+[시작페이지.PGX]
+x=0
+y=0
+cx=1129
+cy=706
+[작동페이지.PGX]
+x=0
+y=0
+cx=1324
+cy=706
+[수동제어페이지.PGX]
+x=80
+y=0
+cx=1280
+cy=720
+[InitPage]
+InitPage=시작페이지.pgx
+[Recent File]
+Page1=선택페이지.PGX
+Page2=작동페이지.PGX
+Page3=시작페이지.PGX
+Page4=데이터뷰어페이지.PGX
+Page5=수동제어페이지.PGX
+Page6=수동제어페이지2.PGX
+Page Number=6
+[데이터뷰어페이지.PGX]
+x=80
+y=0
+cx=1280
+cy=720
+[수동제어페이지2.PGX]
+x=80
+y=0
+cx=1280
+cy=720
