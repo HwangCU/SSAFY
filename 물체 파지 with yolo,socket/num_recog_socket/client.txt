@@ -1,0 +1,44 @@
+import socket
+import time
+
+HOST = '192.168.110.108'
+PORT = 65432
+
+def connect_to_server():
+    while True:
+        try:
+            server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            server.connect((HOST,PORT))
+            return server
+        except Exception as e:
+            print(f"Connection failed: {e}. Retrying in 5seconds ")
+            
+def main():
+    server = connect_to_server()
+
+    try:
+        while True:
+            try:
+                data = server.recv(1024)
+                time.sleep(1)
+                if not data:
+                    break
+
+                labels = data.decode('utf-8')
+                # print(f"{len(labels)} labels detected")
+                print(labels)
+
+            except Exception as e:
+                print(f"Exception occured: {e}.")
+                break
+        server.close()
+    except KeyboardInterrupt:
+        print("Program terminated")
+    except Exception as e:
+        print(f"An error occured: {e}.")
+    finally:
+        print("Program stopped.")
+
+ 
+if __name__ == "__main__":
+    main()

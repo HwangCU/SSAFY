@@ -1,0 +1,83 @@
+import socket
+from robodk import robolink    # RoboDK API
+from robodk import robomath    # Robot toolbox
+RDK = robolink.Robolink()
+from robodk import *      # RoboDK API
+from robolink import *    # Robot toolbox
+
+HOST = '192.168.110.125'
+PORT = 65432
+
+RB1 = RDK.Item('RB5-850',itemtype=2)
+
+
+def connect_to_server():
+    while True:
+        try:
+            server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            server.connect((HOST,PORT))
+            return server
+        except Exception as e:
+            print(f"Connection failed: {e}. Retrying in 5seconds ")
+
+
+def move_robot():
+    RB1.MoveL(Mat([
+        [0.000000,     1.000000,     0.000000,   502.700000],
+        [1.000000,    -0.000000,    -0.000000,  -110.700000],
+        [-0.000000,     0.000000,    -1.000000,   498.400000],
+        [0.000000,     0.000000,     0.000000,     1.000000] 
+        ]))
+
+    RB1.MoveL(Mat([    
+        [-0.000000,     1.000000,     0.000000,   502.700000],
+        [1.000000,     0.000000,    -0.000000,  -110.700000 ],
+        [-0.000000,     0.000000,    -1.000000,   288.400000 ],
+        [0.000000,     0.000000,     0.000000,     1.000000 ]
+        ]))
+
+    RB1.MoveL(Mat([
+    [0.000000,     1.000000,     0.000000,   502.700000],
+    [1.000000,    -0.000000,    -0.000000,  -110.700000],
+    [-0.000000,     0.000000,    -1.000000,   498.400000],
+    [0.000000,     0.000000,     0.000000,     1.000000] 
+    ]))
+
+    RB1.MoveL(Mat([    
+        [-0.000000,     1.000000,     0.000000,   502.700000],
+        [1.000000,     0.000000,    -0.000000,  -110.700000 ],
+        [-0.000000,     0.000000,    -1.000000,   288.400000 ],
+        [0.000000,     0.000000,     0.000000,     1.000000 ]
+        ]))
+
+
+def main():
+    server = connect_to_server()
+
+    try:
+        while True:
+            try:
+                data = server.recv(1024)
+                if not data:
+                    break
+
+                command = data.decode('utf-8')
+
+                if command == '1':
+                    print(f"command {command} received.")
+                    move_robot()
+
+            except Exception as e:
+                print(f"Exception occured: {e}.")
+                break
+        server.close()
+    except KeyboardInterrupt:
+        print("Program terminated")
+    except Exception as e:
+        print(f"An error occured: {e}.")
+    finally:
+        print("Program stopped.")
+
+ 
+if __name__ == "__main__":
+    main()

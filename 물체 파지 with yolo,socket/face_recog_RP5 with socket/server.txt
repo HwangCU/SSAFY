@@ -1,0 +1,69 @@
+import cv2
+import pyrealsense2 as rs
+import numpy as np
+import socket
+
+# 얼굴 인식용 Haar Cascade 로드
+face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+
+# 소켓 서버 설정
+server_ip = '192.168.110.124'  # 로컬호스트
+server_port = 12346  # 포트 번호
+
+# 소켓 생성
+server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server_socket.bind((server_ip, server_port))
+server_socket.listen(1)
+print(f"Server listening on {server_ip}:{server_port}...")
+
+# 연결 대기
+client_socket, client_address = server_socket.accept()
+print(f"Connection established with {client_address}")
+
+# 파이프라인 설정 (RealSense 카메라)
+pipeline = rs.pipeline()
+config = rs.config()
+config.enable_stream(rs.stream.color, 640, 480, rs.format.bgr8, 30)
+config.enable_stream(rs.stream.depth, 640, 480, rs.format.z16, 30)
+pipeline.start(config)
+
+try:
+    while True:
+        # 프레임 기다리기
+        frames = pipeline.wait_for_frames()
+        
+        # 컬러 및 깊이 프레임 얻기
+        color_frame = frames.get_color_frame()
+        depth_frame = frames.get_depth_frame()
+        
+        # 컬러 이미지를 NumPy 배열로 변환
+        color_image = np.asanyarray(color_frame.get_data())
+        
+        # 얼굴 인식: 그레이스케일로 변환
+        gray_image = cv2.cvtColor(color_image, cv2.COLOR_BGR2GRAY)
+
+        # 얼굴 탐지
+        faces = face_cascade.detectMultiScale(gray_image, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+
+        # 얼굴이 인식되면 클라이언트에 1 전송
+        if len(faces) > 0:
+            client_socket.sendall(b'1')  # 얼굴 인식 시 1 전송
+            print("얼굴 인식됨, 1을 클라이언트로 전송")
+
+        # 탐지된 얼굴에 대해 사각형 그리기
+        for (x, y, w, h) in faces:
+            cv2.rectangle(color_image, (x, y), (x + w, y + h), (0, 255, 0), 2)
+
+        # 이미지 출력
+        cv2.imshow("Color Image with Face Detection", color_image)
+        cv2.imshow("Depth Image", np.asanyarray(depth_frame.get_data()))
+        
+        # 'q' 키를 누르면 종료
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+finally:
+    # 연결 종료
+    client_socket.close()
+    server_socket.close()
+    pipeline.stop()
+    cv2.destroyAllWindows()

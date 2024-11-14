@@ -1,0 +1,113 @@
+import rclpy
+from rclpy.node import Node
+from rclpy.action import ActionClient
+from dobot_msgs.action import PointToPoint
+from dobot_msgs.srv import GripperControl
+from std_msgs.msg import String
+import time
+
+class PickAndPlaceNode(Node):
+    def __init__(self):
+        super().__init__('dobot_pick_and_place')
+        self._action_client = ActionClient(self, PointToPoint, 'PTP_action')
+        self.yolob5_subscriber = self.create_subscription(
+            String,
+            '/detected_coords',
+            self.send_goal,
+            10
+        )
+    def cancel_done(self, future):
+        cancel_response = future.result()
+        if len(cancel_response.goals_canceling) > 0:
+            self.get_logger().info('Goal successfully canceled')
+        else:
+            self.get_logger().info('Goal failed to cancel')
+        rclpy.shutdown()
+
+
+    def goal_response_callback(self, future):
+        goal_handle = future.result()
+        if not goal_handle.accepted:
+            self.get_logger().info('Goal rejected: )')
+            return
+        self._goal_handle = goal_handle
+
+        self.get_logger().info('Goal accepted: )')
+
+        self._get_result_future = goal_handle.get_result_async()
+        self._get_result_future.add_done_callback(self.get_result_callback)
+
+    def get_result_callback(self,future):
+        result = future.result().result
+        self.get_logger().info('Result: {0}'.format(result))
+        rclpy.shutdown()
+
+    def feedback_callback(self,feedback):
+        self.get_logger().info("Received feedback: {0}".format(feedback.feedback.current_pose))
+
+    def timer_callback(self):
+        self.get_logger().info('canceling goal')
+        future = self._goal_handle.cancel_goal_async()
+        future.add_done_callback(self.cancel_done)
+
+        self._timer.cancel()
+
+    def send_goal(self, msg):
+        label, x, y, z = [d.strip() for d in msg.data.split(',')]
+
+        self.get_logger().info('Waiting ofr action server...')
+        self._action_client.wait_for_server()
+
+        goal_msg = PointToPoint.Goal()
+        goal_msg.target_pose = [x, y, z, 0]
+        goal_msg.motion_type = 1
+        self.get_logger().info('Sending goal request...')
+
+        self._send_goal_future = self._action_client.send_goal_async(
+            goal_msg,
+            feedback_callback=self.feedback_callback
+        )
+
+        self._send_goal_future.add_done_callback(self.goal_response_callback)
+
+
+    def callback(self, future):
+        response = future.result()
+        self.get_logger().info(f"Start grip {response}")
+
+
+
+
+
+def main(args=None):
+    try:
+        rclpy.init()
+
+        action_client = PickAndPlaceNode()
+
+        tasks_list = [
+            ["move", [125.0, -180.0, 60.0, 0.0], 1],
+            ["gripper", "open", False],
+            ["move", [125.0, -180.0, 30.0, 0.0], 1],
+            ["gripper", "close", False],
+            ["move", [150.0, 0.0, 50.0, 0.0], 1],
+            ["move", [150.0, 0.0, 100.0, 0.0], 1],
+            ["gripper", "open", False],
+            ["move", [150.0, 0.0, 50.0, 0.0], 1],
+            ["move", [150.0, 180.0, 0.0, 0.0], 1]
+        ]
+
+        for (type, target, mode) in tasks_list:
+            action_client.send_goal(type,target,mode)
+            time.sleep(2)
+        rclpy.spin(action_client)
+
+
+    except KeyboardInterrupt:
+        pass
+    finally:
+        action_client.destroy_node()
+        # rclpy.shutdown()
+
+if __name__ == '__main__':
+    main()
